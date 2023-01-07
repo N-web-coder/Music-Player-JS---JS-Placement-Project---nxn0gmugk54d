@@ -13,8 +13,8 @@ const previous = document.getElementById("previous");
 const forwardBtn = document.getElementById("forward");
 const backwardBtn = document.getElementById("backward");
 const searchSongs = document.getElementById("searchsong");
-const gif = document.getElementById('gif')
-const songbar = document.getElementById("songbar")
+const gif = document.getElementById("gif");
+//Attach the event listener to the element
 
 let previewData;
 let music_list = [];
@@ -23,26 +23,23 @@ let isRandom = false;
 let isplaying = false;
 let updateTimer;
 let track_index = 0;
-
-//Api fetch
+if (localStorage) {
+  let data = JSON.parse(localStorage.getItem("playlist"));
+  if (data) {
+    music_list = data;
+  }
+}
 
 const apiFetch = async () => {
-  const result = await fetch(
-    "https://api.napster.com/v2.1/tracks/top?apikey=OTE5ODRkODQtZWYyMC00YTc0LTg5OWUtNzBmNDcwMGI4NWI2"
-  );
-
-  const data = await result.json();
   const list = document.getElementById("music_list");
   const an = document.getElementById("structure");
-  music_list = data?.tracks;
-  console.log(music_list);
-
-  data?.tracks?.forEach((item, index) => {
+  music_list?.forEach((item, index) => {
     const child = document.createElement("div");
     child.className = "musicListDiv";
+    // const img = document.createElement("img");
     const image = document.createElement("img");
     image.src = `http://direct.rhapsody.com/imageserver/v2/albums/${item.albumId}/images/300x300.jpg`
-    
+
     const songname = document.createElement("h3");
     const arname = document.createElement("h5");
     songname.innerText = item.name;
@@ -50,22 +47,17 @@ const apiFetch = async () => {
     child.appendChild(image);
     child.appendChild(songname);
     child.appendChild(arname);
-
     child.onclick = () => {
-      songbar.style.opacity = "1"
       gif.style.opacity = "1"
       track_index = index;
       now_playing.innerText = item.name;
       audioPlay(item.previewURL);
     };
-
     an.appendChild(child);
     list.appendChild(child);
   });
   previewData = data.tracks[0].previewURL;
 };
-
-//Audio play
 
 const audioPlay = async (url) => {
   clearInterval(updateTimer);
@@ -82,7 +74,6 @@ function reset() {
   total_duration.textContent = "00:00";
   // seek_slider.value = 0;
 }
-
 const playandpause = () => {
   const playbtn = document.getElementById("masterPlay");
   playbtn.className = !isplaying
@@ -94,9 +85,8 @@ const playandpause = () => {
   }
   isplaying = !isplaying;
 };
-
 apiFetch();
-console.log(previewData);
+
 function setUpdate() {
   let seekPosition = 0;
   if (!isNaN(player.duration)) {
@@ -134,7 +124,6 @@ forwardBtn.addEventListener("click", () => {
 backwardBtn.addEventListener("click", () => {
   player.currentTime -= 5;
 });
-
 function nextTrack() {
   if (track_index < music_list.length - 1 && isRandom === false) {
     track_index += 1;
@@ -174,102 +163,43 @@ shuffle.onclick = () => {
   }
 };
 
-function addQueue() {
-  if (!queue_music.find((item) => item.id == music_list[track_index].id))
-    queue_music.push(
-      music_list.find((item) => item.id == music_list[track_index].id)
-    );
-}
-
-function showQueue() {
-  var x = document.getElementById("qd");
-  if (x.style.display === "none") {
-    x.style.display = "block";
-  } else {
-    x.style.display = "none";
-  }
-
-  const list = document.getElementById("qd");
-  list.innerHTML = "";
-  queue_music?.forEach((item, index) => {
-    const child = document.createElement("div");
-    // const img = document.createElement("img");
-    const image = document.createElement("img");
-    image.src = `http://direct.rhapsody.com/imageserver/v2/albums/${item.albumId}/images/300x300.jpg`
-    image.style.width = "40%"
-
-    const songname = document.createElement("h3");
-    const arname = document.createElement("h5");
-    songname.innerText = item.name;
-    arname.innerText = item.artistName;
-    child.appendChild(image);
-    child.appendChild(songname);
-    child.appendChild(arname);
-    child.style.padding = '0.5rem'
-    child.onclick = () => {
-      track_index = index;
-      now_playing.innerText = item.name;
-      audioPlay(item.previewURL);
-    };
-    list.appendChild(child);
-  });
-}
-
 searchSongs.onkeydown = (event) => {
-  const inputData = event.target.value.toLowerCase().split(" ").join("");
-  const sd = document.getElementById("sd");
-  if (inputData) {
-    const searchedData = music_list.filter((item) =>
-      item.name
-        .toLowerCase()
-        .split(" ")
-        .join("")
-        .includes(event.target.value.toLowerCase().split(" ").join(""))
-    );
+    const inputData = event.target.value.toLowerCase().split(" ").join("");
+    const sd = document.getElementById("sd");
+    if (inputData) {
+      const searchedData = music_list.filter((item) =>
+        item.name
+          .toLowerCase()
+          .split(" ")
+          .join("")
+          .includes(event.target.value.toLowerCase().split(" ").join(""))
+      );
+  
+      sd.innerHTML = "";
+      searchedData?.forEach((item, index) => {
+        const child = document.createElement("div");
+        // const img = document.createElement("img");
+        const image = document.createElement("img");
+        image.src = `http://direct.rhapsody.com/imageserver/v2/albums/${item.albumId}/images/300x300.jpg`
 
-    // --------------------------------------search ------------------------------------
-    sd.innerHTML = "";
-    searchedData?.forEach((item, index) => {
-      const child = document.createElement("div");
-      // const img = document.createElement("img");
-      const image = document.createElement("img");
-      image.src = `http://direct.rhapsody.com/imageserver/v2/albums/${item.albumId}/images/300x300.jpg`
-      image.style.width = "40%"
-
-      const songname = document.createElement("h3");
-      const arname = document.createElement("h5");
-      songname.innerText = item.name;
-      arname.innerText = item.artistName;
-      child.appendChild(image);
-      child.appendChild(songname);
-      child.appendChild(arname);
-      child.style.padding = '0.5rem'
-      child.onclick = () => {
-        track_index = index;
-        now_playing.innerText = item.name;
-        audioPlay(item.previewURL);
-      };
-      // const list = document.getElementById("music_list");
-      // an.appendChild(child);
-      sd.appendChild(child);
-    });
-  } else {
-    sd.innerHTML = "";
-  }
-};
-
-const addToPlaylist = () => {
-  const currentsong = music_list[track_index];
-  if (localStorage) {
-    let data = JSON.parse(localStorage.getItem("playlist"));
-    console.log(data, "data");
-    if (!data) {
-      data = [];
+        const songname = document.createElement("h3");
+        const arname = document.createElement("h5");
+        songname.innerText = item.name;
+        arname.innerText = item.artistName;
+        child.appendChild(image);
+        child.appendChild(songname);
+        child.appendChild(arname);
+        child.style.padding='0.5rem'
+        child.onclick = () => {
+          track_index = index;
+          now_playing.innerText = item.name;
+          audioPlay(item.previewURL);
+        };
+        // const list = document.getElementById("music_list");
+        // an.appendChild(child);
+        sd.appendChild(child);
+      });
+    } else {
+      sd.innerHTML = "";
     }
-    if (!data.find((item) => item.id == currentsong.id)) {
-      data.push(currentsong);
-      localStorage.setItem("playlist", JSON.stringify(data));
-    }
-  }
-};
-
+  };

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>Playlist</title>
+  </head>
+  <body>
+    <nav>
+      <nav class="navbar">
+        <ul class="link-group">
+          <li class="logo"><h3><strong id="logo1">nit</strong> <span id="logo3" >ish</span><span id="logo2">․</span></h3></li>
+          </li>
+          <li class="link"><a href="./index.html"><b>Home</b> </a></li>
+          <li class="link"><a href="./playlist.html"><b> Playlist</b></a></li>
+          <li><input
+            type="text"
+            placeholder="search"
+            id="searchsong" style="color: black;" /></li>
+        </ul>
+      </nav>
+    </nav>
+    <section class="section-side">
+      <div id="music_list">
+        <div id="structure"></div>
+      </div>
+      <div id="sd"></div>
+    </section>
+    <div class="songbar">
+      <div id="masterSongBar">
+        <div class="songInfo">
+          <img src="https://media.tenor.com/_ghn0Sr3fh0AAAAC/music.gif" id="gif">
+          <p id="masterSongName"></p>
+        </div>
+        <div class="mid_btn">
+          <audio id="player"></audio>
+          <i class="fa-solid fa-shuffle" id="shuffle"></i>
+          <i class="fa-solid fa-backward-fast" id="backward"></i>
+          <i class="fa-solid fa-backward-step" id="previous"></i>
+          <i
+            class="fa-solid fa-2x fa-circle-play"
+            onclick="playandpause()"
+            id="masterPlay"
+          ></i>
+          <i class="fa-solid fa-forward-step" id="next"></i>
+          <i class="fa-solid fa-forward-fast" id="forward"></i>
+        </div>
+        <div class="rightbtn">
+          <span id="timeStamp">
+            <span class="current-time">00:00</span>/<span class="total-duration"
+              >00:00</span
+            >
+          </span>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <script
+      src="https://kit.fontawesome.com/4926a4df42.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://kit.fontawesome.com/bc4963ab3c.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="./playlist.js"></script>
+  </body>
+</html>
